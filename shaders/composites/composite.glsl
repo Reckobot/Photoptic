@@ -94,9 +94,6 @@ void main() {
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float roughness = getRoughness(texcoord, depthtex1, depth);
 	float fresnel = getFresnel(texture(colortex5, texcoord).g, viewDir, normal);
-	if (depth != texture(depthtex1, texcoord).r){
-		fresnel = getFresnel(0, viewDir, normal);
-	}
 	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness) + 0.25;
 	float geometric = min(
 		(2*dot(halfwayDir, normal)*dot(normal, viewDir))
@@ -122,6 +119,9 @@ void main() {
 	if (refl >= 0.1+(230/255)){
 		reflective = true;
 		vec3 reflectRay = reflect(normalize(viewPos), vnormal);
+		if (depth != texture(depthtex1, texcoord).r){
+			reflectRay.y *= 1.2;
+		}
 		int steps = SSR_STEPS;
 
 		for (int i = 3; i < steps; i++){
@@ -153,9 +153,7 @@ void main() {
 				reflection.rgb *= skyBrightness;
 			}
 		}
-	}
-	if (depth != texture(depthtex1, texcoord).r){
-		reflection.rgb *= 2;
+		reflection = BSC(reflection, 0.75, 0.5, 1.0);
 	}
 
 	#endif
@@ -172,10 +170,15 @@ void main() {
 	lighting *= shadow * clamp(diffuse*8, 0.0, 1.0);
 	lighting += ambient;
 
+	if (reflection == vec3(0)){
+		reflection = vec3(1);
+	}
+
 	if (texture(colortex8, texcoord) == vec4(0)){
 		lightbuffer.rgb = lighting;
-		reflbuffer.rgb = color.rgb * reflection * fresnel;
+		reflbuffer.rgb = texture(colortex12, texcoord).rgb * reflection;
 	}else{
 		lightbuffer.rgb = vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
+		reflbuffer.rgb = lightbuffer.rgb;
 	}
 }
