@@ -66,8 +66,8 @@ float getRoughness(vec2 coord, sampler2D depthtex, float depth){
     return roughness;
 }
 
-vec3 viewtoscreen(vec3 input){
-	vec4 cPos = gbufferProjection * vec4(input, 1);
+vec3 viewtoscreen(vec3 i){
+	vec4 cPos = gbufferProjection * vec4(i, 1);
 	vec3 nPos = cPos.xyz / cPos.w;
 	vec3 sPos = nPos * 0.5 + 0.5;
 	return sPos;
