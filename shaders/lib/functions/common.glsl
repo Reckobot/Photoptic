@@ -48,8 +48,7 @@ float getBrightness(vec3 color){
 	return (color.r + color.g + color.b)/3;
 }
 
-float getFresnel(vec2 coord, vec3 dir, vec3 norm){
-	float f0 = texture(colortex5, coord).g;
+float getFresnel(float f0, vec3 dir, vec3 norm){
 	float fresnel = pow(f0 + (1 - f0) * (1-dot(dir, norm)), 5);
     return fresnel;
 }

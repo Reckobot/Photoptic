@@ -93,7 +93,10 @@ void main() {
 	vec3 viewDir = mat3(gbufferModelViewInverse) * -normalize(projectAndDivide(gbufferProjectionInverse, vec3(texcoord.xy, 0) * 2.0 - 1.0));
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float roughness = getRoughness(texcoord, depthtex1, depth);
-	float fresnel = getFresnel(texcoord, viewDir, normal);
+	float fresnel = getFresnel(texture(colortex5, texcoord).g, viewDir, normal);
+	if (depth != texture(depthtex1, texcoord).r){
+		fresnel = getFresnel(0, viewDir, normal);
+	}
 	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness) + 0.25;
 	float geometric = min(
 		(2*dot(halfwayDir, normal)*dot(normal, viewDir))
@@ -151,8 +154,10 @@ void main() {
 			}
 		}
 	}
-	reflection.rgb *= 2;
-	reflection.rgb *= fresnel;
+	if (depth != texture(depthtex1, texcoord).r){
+		reflection.rgb *= 2;
+	}
+
 	#endif
 
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
@@ -169,7 +174,7 @@ void main() {
 
 	if (texture(colortex8, texcoord) == vec4(0)){
 		lightbuffer.rgb = lighting;
-		reflbuffer.rgb = color.rgb * mix((color.rgb*diffuse), reflection, clamp(fresnel, 0.0, 1.0));
+		reflbuffer.rgb = color.rgb * reflection * fresnel;
 	}else{
 		lightbuffer.rgb = vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
 	}
