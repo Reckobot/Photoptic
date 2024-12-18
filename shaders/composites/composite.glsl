@@ -79,7 +79,7 @@ void main() {
 	vec3 normal = normalize((encodedNormal - 0.5) * 2.0);
 
 	vec3 sunlight = (vec3(SUN_R, SUN_G, SUN_B)*SUN_INTENSITY) * lightmap.g;
-	float diffuse = clamp(dot(worldLightVector, normal), 0.0, 1.0);
+	float diffuse = clamp(dot(normal, worldLightVector), 0.0, 1.0);
 
 	vec3 NDCPos = vec3(texcoord.xy, depth) * 2.0 - 1.0;
 	vec3 viewPos = projectAndDivide(gbufferProjectionInverse, NDCPos);
@@ -118,7 +118,7 @@ void main() {
 		int steps = SSR_STEPS;
 
 		for (int i = 3; i < steps; i++){
-			vec3 rayPos = viewPos + (reflectRay*SSR_DIST*(i*1.5));
+			vec3 rayPos = viewPos + (reflectRay*SSR_DIST*(i*4));
 			vec3 rayscreenPos = viewtoscreen(rayPos);
 			vec2 raycoord = rayscreenPos.xy;
 			vec3 rayogPos = projectAndDivide(gbufferProjectionInverse, (vec3(raycoord, texture(depthtex0, raycoord).r) * 2.0 - 1.0));
@@ -151,13 +151,13 @@ void main() {
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float brdfspecular = (fresnel * spec * geometric)/(4*dot(normal, lightDir)*dot(normal, viewDir));
-	float brdfdiffuse = diffuse;
+	float brdfdiffuse = (1.0 - fresnel) * diffuse;
 	float brdf = brdfdiffuse + brdfspecular;
 
 	vec3 lighting = sunlight;
 	lighting *= clamp(getBrightness(skyColor*2), 0.25, 1.0);
 	lighting *= brdf;
-	lighting *= shadow;
+	lighting *= shadow * clamp(diffuse*8, 0.0, 1.0);
 	lighting += ambient;
 
 	if (texture(colortex8, texcoord) == vec4(0)){
