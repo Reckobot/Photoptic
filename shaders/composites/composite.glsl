@@ -108,12 +108,12 @@ void main() {
 	vec3 vnormal = mat3(gbufferModelView) * normal;
 
 //ssr
+	vec3 reflection = vec3(0);
 	#ifdef SSR
 	float dist = SSR_DIST;
 	if (depth != texture(depthtex1, texcoord).r){
 		dist *= 10;
 	}
-	vec3 reflection = vec3(0);
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
 	if (refl >= 0.1+(230/255)){
