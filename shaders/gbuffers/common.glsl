@@ -33,4 +33,6 @@ void main() {
 	lightmapData = vec4(lmcoord, 0.0, 1.0);
 	encodedNormal = vec4(getnormalmap(texcoord) * 1 + 0.5, 1.0);
 	encodedSpecular = texture(specular, texcoord);
+	
+	encodedSpecular.a = 1;
 }

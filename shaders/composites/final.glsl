@@ -26,6 +26,4 @@ void main() {
 	color.rgb = BSC(color.rgb, BRIGHTNESS, SATURATION, CONTRAST);
 
 	color.rgb = aces(color.rgb);
-
-	color.rgb *= BSC(vec3(IGN(texcoord, frameCounter, vec2(viewWidth, viewHeight))), 1.0, 1.0, 0.1)*2;
 }
