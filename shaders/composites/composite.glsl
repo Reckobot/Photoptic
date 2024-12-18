@@ -31,8 +31,8 @@ vec3 getShadow(vec3 shadowScreenPos){
 }
 
 vec3 getSoftShadow(vec4 shadowClipPos, float bias){
-	const float range = 1.0;
-	const float increment = 1.0;
+	const float range = 8.0;
+	const float increment = 4.0;
 
 	float noise = IGN(texcoord, frameCounter, vec2(shadowMapResolution));
 
@@ -105,11 +105,11 @@ void main() {
 		dot(viewDir, halfwayDir)
 		)
 	;
+	vec3 vnormal = mat3(gbufferModelView) * normal;
 
 //ssr
 	#ifdef SSR
 	vec3 reflection = vec3(0);
-	vec3 vnormal = mat3(gbufferModelView) * normal;
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
 	if (refl >= 0.1+(230/255)){
