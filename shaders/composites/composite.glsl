@@ -109,6 +109,10 @@ void main() {
 
 //ssr
 	#ifdef SSR
+	float dist = SSR_DIST;
+	if (depth != texture(depthtex1, texcoord).r){
+		dist *= 10;
+	}
 	vec3 reflection = vec3(0);
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
@@ -118,7 +122,7 @@ void main() {
 		int steps = SSR_STEPS;
 
 		for (int i = 3; i < steps; i++){
-			vec3 rayPos = viewPos + (reflectRay*SSR_DIST*(i*4));
+			vec3 rayPos = viewPos + (reflectRay*dist*(i*4));
 			vec3 rayscreenPos = viewtoscreen(rayPos);
 			vec2 raycoord = rayscreenPos.xy;
 			vec3 rayogPos = projectAndDivide(gbufferProjectionInverse, (vec3(raycoord, texture(depthtex0, raycoord).r) * 2.0 - 1.0));
@@ -126,8 +130,8 @@ void main() {
 			vec3 raypbr = texture(colortex5, raycoord).rgb;
 
 			vec3 newrayPos;
-			if ((distance(rayPos, rayogPos) <= (SSR_DIST * 3))&&((lessThanEqual(raycoord, vec2(1,1))==true)&&(greaterThanEqual(raycoord, vec2(0,0))==true))){
-				if (distance(rayPos, viewPos) > (SSR_DIST * 2)){	
+			if ((distance(rayPos, rayogPos) <= (dist * 3))&&((lessThanEqual(raycoord, vec2(1,1))==true)&&(greaterThanEqual(raycoord, vec2(0,0))==true))){
+				if (distance(rayPos, viewPos) > (dist * 2)){	
 					newrayPos = rayogPos;
 					rayscreenPos = viewtoscreen(newrayPos);
 					raycoord = rayscreenPos.xy;
