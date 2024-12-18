@@ -130,16 +130,18 @@ void main() {
 			vec3 raypbr = texture(colortex5, raycoord).rgb;
 
 			vec3 newrayPos;
-			if ((distance(rayPos, rayogPos) <= (dist * 3))&&((lessThanEqual(raycoord, vec2(1,1))==true)&&(greaterThanEqual(raycoord, vec2(0,0))==true))){
-				if (distance(rayPos, viewPos) > (dist * 2)){	
-					newrayPos = rayogPos;
-					rayscreenPos = viewtoscreen(newrayPos);
-					raycoord = rayscreenPos.xy;
+			if (distance(rayPos, rayogPos) <= (dist * 3)){
+				if ((bool(lessThanEqual(raycoord, vec2(1,1)))&&bool(greaterThanEqual(raycoord, vec2(0,0))))){
+					if (distance(rayPos, viewPos) > (dist * 2)){	
+						newrayPos = rayogPos;
+						rayscreenPos = viewtoscreen(newrayPos);
+						raycoord = rayscreenPos.xy;
 
-					vec3 sampl = texture(colortex0, raycoord).rgb;
+						vec3 sampl = texture(colortex0, raycoord).rgb;
 
-					reflection.rgb = sampl.rgb;
-					break;
+						reflection.rgb = sampl.rgb;
+						break;
+					}
 				}
 			}
 			if (reflection.rgb == vec3(0)){
