@@ -3,4 +3,4 @@
 #include "/lib/functions/common.glsl"
 #include "/lib/distort.glsl"
 
-#include "/composites/composite.glsl"
+#include "/composites/lighting.glsl"
