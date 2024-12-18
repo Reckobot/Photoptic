@@ -153,7 +153,7 @@ void main() {
 				reflection.rgb *= skyBrightness;
 			}
 		}
-		reflection = BSC(reflection, 0.75, 0.5, 1.0);
+		reflection = BSC(reflection, 1.0, 0.5, 1.0);
 	}
 
 	#endif
