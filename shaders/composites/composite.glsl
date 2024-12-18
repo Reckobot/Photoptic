@@ -124,24 +124,23 @@ void main() {
 		for (int i = 3; i < steps; i++){
 			vec3 rayPos = viewPos + (reflectRay*dist*(i*4));
 			vec3 rayscreenPos = viewtoscreen(rayPos);
-			vec2 raycoord = rayscreenPos.xy;
+			vec2 raycoord = clamp(rayscreenPos.xy, vec2(0), vec2(1));
 			vec3 rayogPos = projectAndDivide(gbufferProjectionInverse, (vec3(raycoord, texture(depthtex0, raycoord).r) * 2.0 - 1.0));
 			
 			vec3 raypbr = texture(colortex5, raycoord).rgb;
+			bool valid = (distance(rayPos, rayogPos) <= (dist * 3));
 
 			vec3 newrayPos;
-			if (distance(rayPos, rayogPos) <= (dist * 3)){
-				if ((bool(lessThanEqual(raycoord, vec2(1,1)))&&bool(greaterThanEqual(raycoord, vec2(0,0))))){
-					if (distance(rayPos, viewPos) > (dist * 2)){	
-						newrayPos = rayogPos;
-						rayscreenPos = viewtoscreen(newrayPos);
-						raycoord = rayscreenPos.xy;
+			if (valid){
+				if (distance(rayPos, viewPos) > (dist * 2)){	
+					newrayPos = rayogPos;
+					rayscreenPos = viewtoscreen(newrayPos);
+					raycoord = clamp(rayscreenPos.xy, vec2(0), vec2(1));
 
-						vec3 sampl = texture(colortex0, raycoord).rgb;
+					vec3 sampl = texture(colortex0, raycoord).rgb;
 
-						reflection.rgb = sampl.rgb;
-						break;
-					}
+					reflection.rgb = sampl.rgb;
+					break;
 				}
 			}
 			if (reflection.rgb == vec3(0)){
@@ -152,6 +151,8 @@ void main() {
 			}
 		}
 	}
+	reflection.rgb *= 2;
+	reflection.rgb *= fresnel;
 	#endif
 
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
