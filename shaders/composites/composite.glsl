@@ -160,7 +160,7 @@ void main() {
 
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
-	float brdfspecular = (fresnel * spec * geometric)/(4*dot(normal, lightDir)*dot(normal, viewDir));
+	float brdfspecular = (fresnel * spec * geometric * diffuse)/(4*dot(normal, lightDir)*dot(normal, viewDir));
 	float brdfdiffuse = (1.0 - fresnel) * diffuse;
 	float brdf = brdfdiffuse + brdfspecular;
 
