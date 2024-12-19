@@ -79,7 +79,7 @@ void main() {
 	vec3 normal = normalize((encodedNormal - 0.5) * 2.0);
 
 	vec3 sunlight = (vec3(SUN_R, SUN_G, SUN_B)*SUN_INTENSITY) * lightmap.g;
-	float diffuse = clamp(dot(normal, worldLightVector), 0.0, 1.0);
+	float diffuse = dot(normal, worldLightVector);
 
 	vec3 NDCPos = vec3(texcoord.xy, depth) * 2.0 - 1.0;
 	vec3 viewPos = projectAndDivide(gbufferProjectionInverse, NDCPos);
