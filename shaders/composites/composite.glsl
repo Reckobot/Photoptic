@@ -161,9 +161,9 @@ void main() {
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float NoV = dot(normal, viewDir);
-	float brdfspecular = (fresnel * spec * geometric * NoL)/(4*NoL*NoV);
+	float brdfspecular = (fresnel * spec * geometric)/(4*NoL*NoV);
 	float brdfdiffuse = (1.0 - fresnel) * NoL;
-	float brdf = brdfdiffuse + brdfspecular;
+	float brdf = NoL * (brdfdiffuse + brdfspecular);
 
 	vec3 lighting = sunlight;
 	lighting *= clamp(getBrightness(skyColor*2), 0.25, 1.0);
