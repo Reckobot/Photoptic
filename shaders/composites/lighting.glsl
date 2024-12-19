@@ -20,5 +20,9 @@ void main() {
 		fresnel = getFresnel(0, viewDir, normal);
 	}
 
+	if (reflection == vec4(0)){
+		reflection = color;
+	}
+
 	color = mix(color, reflection, clamp(fresnel, 0.0, 1.0));
 }

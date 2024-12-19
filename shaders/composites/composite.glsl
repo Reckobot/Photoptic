@@ -170,11 +170,7 @@ void main() {
 	lighting *= shadow * clamp(diffuse*8, 0.0, 1.0);
 	lighting += ambient;
 
-	if (reflection == vec3(0)){
-		reflection = vec3(1);
-	}
-
-	reflection *= lightmap.g * clamp(shadow, 0.75, 1.0) * clamp(diffuse, 0.75, 1.0);
+	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(diffuse, 0.9, 1.0);
 
 	if (texture(colortex8, texcoord) == vec4(0)){
 		lightbuffer.rgb = lighting;
