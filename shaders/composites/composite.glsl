@@ -112,7 +112,7 @@ void main() {
 	#ifdef SSR
 	float dist = SSR_DIST;
 	if (depth != texture(depthtex1, texcoord).r){
-		dist *= 5;
+		dist *= 50;
 	}
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
