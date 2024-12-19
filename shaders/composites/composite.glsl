@@ -112,7 +112,7 @@ void main() {
 	#ifdef SSR
 	float dist = SSR_DIST;
 	if (depth != texture(depthtex1, texcoord).r){
-		dist *= 10;
+		dist *= 5;
 	}
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
@@ -173,6 +173,8 @@ void main() {
 	if (reflection == vec3(0)){
 		reflection = vec3(1);
 	}
+
+	reflection *= lightmap.g * clamp(shadow, 0.75, 1.0) * clamp(diffuse, 0.75, 1.0);
 
 	if (texture(colortex8, texcoord) == vec4(0)){
 		lightbuffer.rgb = lighting;
