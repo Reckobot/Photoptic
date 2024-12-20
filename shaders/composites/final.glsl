@@ -15,7 +15,7 @@ void main() {
 	vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
 	float dist = length(viewPos) / (far*0.85);
-	float fogFactor = exp(-5 * (1.0 - dist));
+	float fogFactor = exp(-10 * (1.0 - dist));
 
 	if (feetPlayerPos.y > 0){
 		color.rgb = mix(color.rgb, (texture(colortex3, texcoord).rgb+texture(colortex4, texcoord).rgb)*clamp(1-(playerMood*16), 0.0, 1.0), clamp(fogFactor, 0.0, 1.0));

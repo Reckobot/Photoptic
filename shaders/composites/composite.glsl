@@ -117,7 +117,7 @@ void main() {
 		reflective = true;
 		vec3 reflectRay = reflect(normalize(viewPos), vnormal);
 		if (depth != texture(depthtex1, texcoord).r){
-			reflectRay.y *= 1.2;
+			reflectRay.y += 0.01;
 		}
 		int steps = SSR_STEPS;
 
@@ -155,21 +155,20 @@ void main() {
 
 	#endif
 
-	sunlight *= shadow * clamp(NoL*8, 0.0, 1.0);
+	sunlight *= shadow * clamp(NoL, 0.0, 1.0);
 	sunlight *= SUN_INTENSITY;
 
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float NoV = dot(normal, viewDir);
-	vec3 brdfspecular = (((fresnel * spec * geometric)/(4*NoL*NoV)) * sunlight) * (texture(colortex5, texcoord).r*16);
-	vec3 brdfdiffuse = ((1.0 - fresnel) * NoL) * sunlight;
-	vec3 brdf = NoL * (brdfspecular + brdfdiffuse);
-	brdf += ambient;
+	vec3 brdfspecular = ((fresnel * spec * geometric * NoL)/(4*NoL*NoV)) * sunlight;
+	vec3 brdfdiffuse = color.rgb * (((1.0 - fresnel) * NoL) * sunlight + ambient);
+	vec3 brdf = (brdfspecular + brdfdiffuse);
 
 	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(NoL, 0.9, 1.0);
 
 	if (texture(colortex8, texcoord) == vec4(0)){
-		color.rgb *= brdf;
+		color.rgb = brdf;
 		reflection = texture(colortex12, texcoord).rgb * reflection;
 	}else{
 		color.rgb *= vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
@@ -184,5 +183,5 @@ void main() {
 		fresnel = getFresnel(0, viewDir, normal);
 	}
 
-	color.rgb = mix(color.rgb, reflection, clamp(fresnel, 0.0, 1.0));
+	color.rgb = mix(color.rgb, reflection, fresnel);
 }
