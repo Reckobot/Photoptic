@@ -11,8 +11,18 @@
 ▐▌  ▐▌▐▌ ▐▌▐▙▄▄▀▐▙▄▄▖    ▐▙▄▞▘ ▐▌      ▐▌ ▐▌▐▙▄▄▖▝▚▄▄▖▐▌ ▐▌▝▚▄▞▘▐▙▄▞▘▝▚▄▞▘ █  
                                                                               
 
-Copyright © Reckobot 2024
-
 If you did not get this shader from github
 please contact me at "reckobot" on discord and
 tell me where you got it from so I can take care of it :)
+
+All Rights Reserved
+
+Copyright © Reckobot 2024
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
