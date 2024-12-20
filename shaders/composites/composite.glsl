@@ -2,11 +2,8 @@
 
 in vec2 texcoord;
 
-/* RENDERTARGETS: 0,7,9,10 */
+/* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 color;
-layout(location = 1) out vec4 fresnelbuffer;
-layout(location = 2) out vec4 lightbuffer;
-layout(location = 3) out vec4 reflbuffer;
 
 float fogify(float x, float w) {
 	return w / (x * x + w);
@@ -94,7 +91,7 @@ void main() {
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float roughness = getRoughness(texcoord, depthtex1, depth);
 	float fresnel = getFresnel(texture(colortex5, texcoord).g, viewDir, normal);
-	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness) + 0.25;
+	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness);
 	float geometric = min(
 		(2*dot(halfwayDir, normal)*dot(normal, viewDir))
 		/
@@ -158,27 +155,34 @@ void main() {
 
 	#endif
 
+	sunlight *= shadow * clamp(NoL*8, 0.0, 1.0);
+	sunlight *= SUN_INTENSITY;
+
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float NoV = dot(normal, viewDir);
-	float brdfspecular = (fresnel * spec * geometric)/(4*NoL*NoV);
-	float brdfdiffuse = (1.0 - fresnel) * NoL;
-	float brdf = NoL * (brdfdiffuse + brdfspecular);
-
-	vec3 lighting = sunlight;
-	lighting *= clamp(getBrightness(skyColor*2), 0.25, 1.0);
-	lighting *= brdf;
-	lighting *= shadow * clamp(NoL*8, 0.0, 1.0);
-	lighting *= SUN_INTENSITY;
-	lighting += ambient;
+	vec3 brdfspecular = (((fresnel * spec * geometric)/(4*NoL*NoV)) * sunlight) * (texture(colortex5, texcoord).r*16);
+	vec3 brdfdiffuse = ((1.0 - fresnel) * NoL) * sunlight;
+	vec3 brdf = NoL * (brdfspecular + brdfdiffuse);
+	brdf += ambient;
 
 	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(NoL, 0.9, 1.0);
 
 	if (texture(colortex8, texcoord) == vec4(0)){
-		lightbuffer.rgb = lighting;
-		reflbuffer.rgb = texture(colortex12, texcoord).rgb * reflection;
+		color.rgb *= brdf;
+		reflection = texture(colortex12, texcoord).rgb * reflection;
 	}else{
-		lightbuffer.rgb = vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
-		reflbuffer.rgb = lightbuffer.rgb;
+		color.rgb *= vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
+		reflection = color.rgb;
 	}
+
+	if (reflection == vec3(0)){
+		reflection = color.rgb;
+	}
+
+	if (depth != texture(depthtex1, texcoord).r){
+		fresnel = getFresnel(0, viewDir, normal);
+	}
+
+	color.rgb = mix(color.rgb, reflection, clamp(fresnel, 0.0, 1.0));
 }

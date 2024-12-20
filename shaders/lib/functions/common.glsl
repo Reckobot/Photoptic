@@ -57,7 +57,7 @@ float getRoughness(vec2 coord, sampler2D depthtex, float depth){
 	float roughness = pow(1 - texture(colortex5, coord).r, 2);
 
 	if (depth != texture(depthtex, coord).r){
-		roughness = 0.01;
+		roughness = 0.0025;
 	}
 
 	roughness = (2/roughness)-2;
