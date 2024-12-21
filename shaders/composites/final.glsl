@@ -14,7 +14,7 @@ void main() {
 	vec3 viewPos = projectAndDivide(gbufferProjectionInverse, NDCPos);
 	vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 
-	float dist = length(viewPos) / (far*0.85);
+	float dist = length(viewPos) / (far*0.9);
 	float fogFactor = exp(-10 * (1.0 - dist));
 
 	if (feetPlayerPos.y > 0){
