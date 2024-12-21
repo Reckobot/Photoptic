@@ -75,7 +75,7 @@ void main() {
 	vec3 encodedNormal = texture(colortex2, texcoord).rgb;
 	vec3 normal = normalize((encodedNormal - 0.5) * 2.0);
 
-	vec3 sunlight = (vec3(SUN_R, SUN_G, SUN_B)) * lightmap.g;
+	vec3 sunlight = (vec3(SUN_R, SUN_G, SUN_B));
 	float NoL = dot(normal, worldLightVector);
 
 	vec3 NDCPos = vec3(texcoord.xy, depth) * 2.0 - 1.0;
@@ -158,12 +158,16 @@ void main() {
 	sunlight *= shadow * clamp(NoL, 0.0, 1.0);
 	sunlight *= SUN_INTENSITY;
 
+	float timeDay = clamp(getBrightness(skyColor), 0.2, 1.0);
+	sunlight.b *= 1+(1-(timeDay*2));
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float NoV = dot(normal, viewDir);
 	vec3 brdfspecular = ((fresnel * spec * geometric * NoL)/(4*NoL*NoV)) * sunlight;
 	vec3 brdfdiffuse = color.rgb * (((1.0 - fresnel) * NoL) * sunlight + ambient);
 	vec3 brdf = (brdfspecular + brdfdiffuse);
+	brdf *= timeDay;
+	brdf *= 1 + (lightmap.r);
 
 	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(NoL, 0.9, 1.0);
 
