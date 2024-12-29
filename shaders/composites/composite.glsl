@@ -28,10 +28,10 @@ vec3 getShadow(vec3 shadowScreenPos){
 }
 
 vec3 getSoftShadow(vec4 shadowClipPos, float bias){
-	const float range = 8.0;
-	const float increment = 4.0;
+	const float range = 1.0;
+	const float increment = 1.0;
 
-	float noise = IGN(texcoord, frameCounter, vec2(shadowMapResolution));
+	float noise = IGN(texcoord, frameCounter, vec2(viewWidth, viewHeight)/16);
 
 	float theta = noise * radians(360.0);
 	float cosTheta = cos(theta);
@@ -164,7 +164,7 @@ void main() {
 
 	float NoV = dot(normal, viewDir);
 	vec3 brdfspecular = ((fresnel * spec * geometric * NoL)/(4*NoL*NoV)) * sunlight;
-	vec3 brdfdiffuse = color.rgb * (((1.0 - fresnel) * NoL) * sunlight + ambient);
+	vec3 brdfdiffuse = color.rgb * ((NoL) * sunlight + ambient);
 	vec3 brdf = (brdfspecular + brdfdiffuse);
 	brdf *= timeDay;
 	brdf *= 1 + (lightmap.r);

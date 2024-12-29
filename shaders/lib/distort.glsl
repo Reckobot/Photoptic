@@ -1,6 +1,10 @@
 #define SHADOW_RES 4096 //[128 256 512 1024 2048 4096 8192]
 #define SHADOW_DIST 100 //[50 100 200 300 400 500 600 700 800 900 1000]
 
+const bool shadowtex0Nearest = true;
+const bool shadowtex1Nearest = true;
+const bool shadowcolor0Nearest = true;
+
 const int shadowMapResolution = SHADOW_RES;
 const float shadowDistance = SHADOW_DIST;
 
