@@ -1,5 +1,5 @@
 An iris-based minecraft shader that tries its best to look good.
-![Photoptic Screenshot](https://i.imgur.com/9goIJnx.png)
+![Photoptic Screenshot](https://i.imgur.com/UXiYfqI.png)
 Features:
 - A Proper BRDF
 - Distant Fog
