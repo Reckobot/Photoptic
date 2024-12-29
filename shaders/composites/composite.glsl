@@ -29,9 +29,9 @@ vec3 getShadow(vec3 shadowScreenPos){
 
 vec3 getSoftShadow(vec4 shadowClipPos, float bias){
 	const float range = 1.0;
-	const float increment = 1.0;
+	const float increment = 0.5;
 
-	float noise = IGN(texcoord, frameCounter, vec2(viewWidth, viewHeight)/16);
+	float noise = IGN(texcoord, frameCounter, vec2(viewWidth, viewHeight));
 
 	float theta = noise * radians(360.0);
 	float cosTheta = cos(theta);
@@ -83,7 +83,7 @@ void main() {
 	vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 	vec3 shadowViewPos = (shadowModelView * vec4(feetPlayerPos, 1.0)).xyz;
 	vec4 shadowClipPos = shadowProjection * vec4(shadowViewPos, 1.0);
-	vec3 shadow = getSoftShadow(shadowClipPos, exp(length(viewPos)/16)*SHADOW_RES*0.00000005);
+	vec3 shadow = getSoftShadow(shadowClipPos, clamp(exp(length(viewPos)/16)*SHADOW_RES*0.00000005, 0.001, 1.0));
 
 
 	vec3 lightDir = worldLightVector;

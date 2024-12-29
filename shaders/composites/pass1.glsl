@@ -2,8 +2,9 @@
 
 in vec2 texcoord;
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 6 */
 layout(location = 0) out vec4 blur;
 
 void main() {
+    blur.rgb = blurPixelX(colortex0, texcoord, 50);
 }
