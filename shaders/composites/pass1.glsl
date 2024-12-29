@@ -6,5 +6,9 @@ in vec2 texcoord;
 layout(location = 0) out vec4 blur;
 
 void main() {
-    blur.rgb = blurPixelX(colortex0, texcoord, 50);
+    #ifdef BLOOM
+    blur.rgb = blurPixelX(colortex0, texcoord, 25, 2);
+    #else
+    blur = texture(colortex0, texcoord);
+    #endif
 }

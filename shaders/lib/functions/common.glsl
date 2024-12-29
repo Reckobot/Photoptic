@@ -72,20 +72,20 @@ vec3 viewtoscreen(vec3 i){
 	return sPos;
 }
 
-vec3 blurPixelY(sampler2D colortex, vec2 coord, int radius){
+vec3 blurPixelY(sampler2D colortex, vec2 coord, int radius, int increment){
 	vec3 final = vec3(0);
-	int dividend = radius*2+1;
-	for (int y = int(coord.y*viewHeight) - radius; y < int(coord.y*viewHeight) + radius; y++){
+	float dividend = (radius*2+1)/increment;
+	for (int y = int(coord.y*viewHeight) - radius; y < int(coord.y*viewHeight) + radius; y += increment){
 		final += texture(colortex, vec2(coord.x, y/viewHeight)).rgb;
 	}
 	final /= dividend;
 	return final;
 }
 
-vec3 blurPixelX(sampler2D colortex, vec2 coord, int radius){
+vec3 blurPixelX(sampler2D colortex, vec2 coord, int radius, int increment){
 	vec3 final = vec3(0);
-	int dividend = radius*2+1;
-	for (int x = int(coord.x*viewWidth) - radius; x < int(coord.x*viewWidth) + radius; x++){
+	float dividend = (radius*2+1)/increment;
+	for (int x = int(coord.x*viewWidth) - radius; x < int(coord.x*viewWidth) + radius; x += increment){
 		final += texture(colortex, vec2(x/viewWidth, coord.y)).rgb;
 	}
 	final /= dividend;
