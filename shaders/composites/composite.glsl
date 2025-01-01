@@ -164,10 +164,10 @@ void main() {
 
 	float NoV = dot(normal, viewDir);
 	vec3 brdfspecular = ((fresnel * spec * geometric * NoL)/(4*NoL*NoV)) * sunlight;
-	vec3 brdfdiffuse = color.rgb * ((NoL) * sunlight + ambient);
+	vec3 brdfdiffuse = color.rgb * ((NoL) * sunlight);
 	vec3 brdf = (brdfspecular + brdfdiffuse);
 	brdf *= timeDay;
-	brdf *= 1 + (lightmap.r);
+	brdf += texture(colortex0, texcoord).rgb * ambient;
 
 	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(NoL, 0.9, 1.0);
 
@@ -188,4 +188,5 @@ void main() {
 	}
 
 	color.rgb = mix(color.rgb, reflection, fresnel);
+	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/2);
 }
