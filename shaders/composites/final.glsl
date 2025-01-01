@@ -7,6 +7,7 @@ layout(location = 0) out vec4 color;
 
 void main() {
 	color = texture(colortex0, texcoord);
+	color += color * texture(colortex7, texcoord);
 
 	float depth = texture(depthtex0, texcoord).r;
 
