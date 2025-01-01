@@ -158,7 +158,7 @@ void main() {
 	sunlight *= shadow * clamp(NoL, 0.0, 1.0);
 	sunlight *= SUN_INTENSITY;
 
-	float timeDay = clamp(getBrightness(skyColor), 0.2, 1.0);
+	float timeDay = clamp(getBrightness(skyColor), 0.0, 1.0);
 	sunlight.b *= 1+(1-(timeDay*2));
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
