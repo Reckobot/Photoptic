@@ -29,7 +29,7 @@ void main() {
 	color = texture(gtexture, texcoord);
 	albedo = color;
 	albedo.a = 1;
-	color *= vec4(BSC(glcolor.rgb, 0.25, 0.5, 1.0),1.0);
+	color *= vec4(BSC(glcolor.rgb, 0.25, 1.5, 1.0),1.0);
 	color.a = clamp(color.a*1.1, 0.0, 1.0);
 	color *= texture(lightmap, lmcoord);
 	if (color.a < 0.1) {
