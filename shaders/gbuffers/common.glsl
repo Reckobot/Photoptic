@@ -21,7 +21,6 @@ layout(location = 4) out vec4 albedo;
 vec3 getnormalmap(vec2 texcoord){
 	vec3 normalmap = texture(normals, texcoord).rgb;
 	normalmap = normalmap * 2 - 1;
-	normalmap.z = sqrt(1 - dot(normalmap.xy, normalmap.xy));
 	return tbnmatrix * normalmap;
 }
 
