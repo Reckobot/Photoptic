@@ -21,7 +21,9 @@
 
 #define BLOOM
 
-const float sunPathRotation = 45;
+#define SUN_ROTATION 0 //[-90 -85 -80 -75 -70 -65 -60 -55 -50 -45 -40 -35 -30 -25 -20 -15 -10 -5 0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90]
+
+const float sunPathRotation = SUN_ROTATION;
 
 const int RGBA16F = 0;
 const int RGBA32F = 0;
