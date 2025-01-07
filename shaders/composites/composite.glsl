@@ -117,7 +117,7 @@ void main() {
 		reflective = true;
 		vec3 reflectRay = reflect(normalize(viewPos), vnormal);
 		if (depth != texture(depthtex1, texcoord).r){
-			reflectRay.y += 0.01;
+			reflectRay.y += 0.05;
 		}
 		int steps = SSR_STEPS;
 
