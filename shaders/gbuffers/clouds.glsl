@@ -18,7 +18,6 @@ layout(location = 2) out vec4 encodedNormal;
 void main() {
 	color = texture(gtexture, texcoord) * glcolor;
 	color *= texture(lightmap, lmcoord);
-    color *= 2;
 	color *= clamp(getBrightness(skyColor*2), 0.0, 1.0);
 	color.a = 1;
 }
