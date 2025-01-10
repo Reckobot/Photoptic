@@ -215,7 +215,7 @@ void main() {
 
 	#ifdef SSS
 
-	float sssFactor = 1;
+	float sssFactor = 1.25;
 
 	if ((texture(colortex5, texcoord).b >= 65/255)&&(texture(colortex5, texcoord).b <= 1)){
 		sssFactor += (texture(colortex5, texcoord).b)/8;
