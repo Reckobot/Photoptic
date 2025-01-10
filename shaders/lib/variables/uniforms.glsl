@@ -39,6 +39,7 @@ uniform float viewWidth;
 uniform float viewHeight;
 
 uniform int frameCounter;
+uniform float frameTime;
 uniform float far;
 uniform float playerMood;
 uniform float constantMood;
@@ -46,3 +47,7 @@ uniform float constantMood;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform vec3 cameraPosition;
+uniform int renderStage;
+
+uniform int worldTime;
+uniform int biome_category;

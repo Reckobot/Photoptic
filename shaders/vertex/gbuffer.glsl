@@ -6,6 +6,10 @@ out vec4 glcolor;
 out vec3 normal;
 in vec4 at_tangent;
 out mat3 tbnmatrix;
+out vec3 pos;
+
+in vec2 mc_Entity;
+flat out int isFoliage;
 
 void main() {
 	gl_Position = ftransform();
@@ -20,4 +24,12 @@ void main() {
 		mat3(gbufferModelViewInverse) * bitangent, 
 		mat3(gbufferModelViewInverse) * normal
 	);
+
+	if (mc_Entity.x == 300){
+		isFoliage = 1;
+	}else{
+		isFoliage = 0;
+	}
+
+	pos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 }

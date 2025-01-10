@@ -1,4 +1,6 @@
 #version 330 compatibility
+#extension GL_ARB_shader_storage_buffer_object : enable
+#include "/lib/SSBO.glsl"
 
 in vec2 texcoord;
 
@@ -15,6 +17,10 @@ vec3 calcSkyColor(vec3 pos) {
 }
 
 vec3 getShadow(vec3 shadowScreenPos){
+	vec4 shadowColor = texture(shadowcolor0, shadowScreenPos.xy);
+	if (texture(shadowcolor1, shadowScreenPos.xy).rgb == vec3(1)){
+	return shadowColor.rgb;
+	}
 	float transparentShadow = step(shadowScreenPos.z, texture(shadowtex0, shadowScreenPos.xy).r); // sample the shadow map containing everything
 	if(transparentShadow == 1.0){
 	return vec3(1.0);
@@ -23,7 +29,6 @@ vec3 getShadow(vec3 shadowScreenPos){
 	if(opaqueShadow == 0.0){
 	return vec3(0.0);
 	}
-	vec4 shadowColor = texture(shadowcolor0, shadowScreenPos.xy);
 	return shadowColor.rgb * 2.0;
 }
 
@@ -76,15 +81,22 @@ void main() {
 	vec3 normal = normalize((encodedNormal - 0.5) * 2.0);
 
 	vec3 sunlight = (vec3(SUN_R, SUN_G, SUN_B));
-	float NoL = dot(normal, worldLightVector);
 
 	vec3 NDCPos = vec3(texcoord.xy, depth) * 2.0 - 1.0;
 	vec3 viewPos = projectAndDivide(gbufferProjectionInverse, NDCPos);
+	vec3 ftplPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+	vec3 worldPos = ftplPos + cameraPosition;
 	vec3 feetPlayerPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
 	vec3 shadowViewPos = (shadowModelView * vec4(feetPlayerPos, 1.0)).xyz;
 	vec4 shadowClipPos = shadowProjection * vec4(shadowViewPos, 1.0);
 	vec3 shadow = getSoftShadow(shadowClipPos, clamp(exp(length(viewPos)/16)*SHADOW_RES*0.00000005, 0.001, 1.0));
 
+	float NoL = dot(normal, worldLightVector);
+	if (texture(colortex15, texcoord).rgb != vec3(0)){
+		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
+			NoL = clamp(NoL, 0.5, 1.0);
+		}
+	}
 
 	vec3 lightDir = worldLightVector;
 	vec3 viewDir = mat3(gbufferModelViewInverse) * -normalize(projectAndDivide(gbufferProjectionInverse, vec3(texcoord.xy, 0) * 2.0 - 1.0));
@@ -108,8 +120,9 @@ void main() {
 	vec3 reflection = vec3(0);
 	#ifdef SSR
 	float dist = SSR_DIST;
+	int init = 3;
 	if (depth != texture(depthtex1, texcoord).r){
-		dist *= 10;
+		dist *= 16;
 	}
 	float refl = texture(colortex5, texcoord).g;
 	bool reflective = false;
@@ -117,18 +130,18 @@ void main() {
 		reflective = true;
 		vec3 reflectRay = reflect(normalize(viewPos), vnormal);
 		if (depth != texture(depthtex1, texcoord).r){
-			reflectRay.y += 0.05;
+			reflectRay.y += clamp(length(viewPos)/1000, 0.0, 0.05);
 		}
 		int steps = SSR_STEPS;
 
-		for (int i = 3; i < steps; i++){
+		for (int i = init; i < steps; i++){
 			vec3 rayPos = viewPos + (reflectRay*dist*(i*4));
 			vec3 rayscreenPos = viewtoscreen(rayPos);
 			vec2 raycoord = clamp(rayscreenPos.xy, vec2(0), vec2(1));
 			vec3 rayogPos = projectAndDivide(gbufferProjectionInverse, (vec3(raycoord, texture(depthtex0, raycoord).r) * 2.0 - 1.0));
 			
 			vec3 raypbr = texture(colortex5, raycoord).rgb;
-			bool valid = (distance(rayPos, rayogPos) <= (dist * 3));
+			bool valid = ((distance(rayPos, rayogPos) <= (dist * 3))&&(texture(depthtex0, raycoord).r == texture(depthtex1, raycoord).r));
 
 			vec3 newrayPos;
 			if (valid){
@@ -150,7 +163,7 @@ void main() {
 				reflection.rgb *= skyBrightness;
 			}
 		}
-		reflection = BSC(reflection, 1.0, 0.5, 1.0);
+		reflection = BSC(reflection, 1.0, 1.0, 1.0);
 	}
 
 	#endif
@@ -158,14 +171,18 @@ void main() {
 	sunlight *= shadow * clamp(NoL, 0.0, 1.0);
 	sunlight *= SUN_INTENSITY;
 
-	float timeDay = clamp(getBrightness(skyColor), 0.0, 1.0);
-	sunlight.b *= 1+(1-(timeDay*2));
+	float timeDay = clamp(getBrightness(skyColor), 0.05, 1.0);
+	if (depth == texture(depthtex1, texcoord).r){
+		sunlight.b *= 1+(1-(timeDay*2));
+	}else{
+		sunlight = vec3(1);
+	}
 	vec3 ambient = (vec3(AMBIENT_R, AMBIENT_G, AMBIENT_B)*AMBIENT_INTENSITY);
 
 	float NoV = dot(normal, viewDir);
 	vec3 brdfspecular = ((fresnel * spec * geometric * NoL)/(4*NoL*NoV)) * sunlight;
 	vec3 brdfdiffuse = color.rgb * ((NoL) * sunlight);
-	vec3 brdf = (brdfspecular + brdfdiffuse);
+	vec3 brdf = clamp(brdfspecular + brdfdiffuse, 0.0, 1.0);
 	brdf *= timeDay;
 	brdf += texture(colortex0, texcoord).rgb * ambient;
 
@@ -173,7 +190,7 @@ void main() {
 
 	if (texture(colortex8, texcoord) == vec4(0)){
 		color.rgb = brdf;
-		reflection = texture(colortex12, texcoord).rgb * reflection;
+		reflection = color.rgb * reflection;
 	}else{
 		color.rgb *= vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
 		reflection = color.rgb;
@@ -184,9 +201,25 @@ void main() {
 	}
 
 	if (depth != texture(depthtex1, texcoord).r){
-		fresnel = getFresnel(0, viewDir, normal);
+		fresnel = getFresnel(0.25, viewDir, normal);
+		reflection = BSC(reflection, 4.0, 1.0, 1.0);
 	}
 
 	color.rgb = mix(color.rgb, reflection, fresnel);
-	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/2);
+	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/4/(timeDay*24));
+
+	#ifdef SSS
+
+	float sssFactor = 2.0;
+
+	if ((texture(colortex5, texcoord).b >= 65/255)&&(texture(colortex5, texcoord).b <= 1)){
+		sssFactor = 0.5+(texture(colortex5, texcoord).b);
+	}
+
+	if (texture(colortex15, texcoord).rgb != vec3(0)){
+		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
+			color.rgb = mix(BSC(color.rgb, sssFactor, 1.0, 1.0), color.rgb, shadow*NoV);
+		}
+	}
+	#endif
 }

@@ -14,10 +14,13 @@ in vec3 normal;
 layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 lightmapData;
 layout(location = 2) out vec4 encodedNormal;
+layout(location = 3) out vec4 cloudbuffer;
 
 void main() {
 	color = texture(gtexture, texcoord) * glcolor;
 	color *= texture(lightmap, lmcoord);
 	color *= clamp(getBrightness(skyColor*2), 0.0, 1.0);
 	color.a = 1;
+
+	cloudbuffer = color;
 }
