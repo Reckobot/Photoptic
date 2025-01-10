@@ -89,17 +89,16 @@ void main() {
 	vec4 shadowClipPos = shadowProjection * vec4(shadowViewPos, 1.0);
 	vec3 shadow = getSoftShadow(shadowClipPos, clamp(exp(length(viewPos)/16)*SHADOW_RES*0.00000005, 0.001, 1.0));
 
-	vec3 cloudpos = worldPos;
+	float cloudshadow = 0;
 	
-	for (int i = 0; i < 8; i++){
-		vec3 p = (worldPos + (worldLightVector*i*8));
-		if (p.y > 125){
-			cloudpos = p;
+	for (int i = 0; i < 16; i++){
+		vec3 pos = (worldPos + (normalize(worldLightVector)*i*6));
+		if ((pos.y > 125)&&(pos.y < 175)){
+			cloudshadow += getCloud(pos);
 		}
 	}
 
-	float cloudshadow = clamp(getCloud(cloudpos), -1.0, 1.0);
-	shadow *= shadow - clamp(cloudshadow*6, 0.0, 1.0);
+	shadow *= shadow - clamp(cloudshadow*4, 0.0, 1.0);
 	shadow = clamp(shadow, 0.0, 1.0);
 
 	float NoL = dot(normal, worldLightVector);
@@ -109,7 +108,7 @@ void main() {
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 	float roughness = getRoughness(texcoord, depthtex1, depth);
 	float fresnel = getFresnel(texture(colortex5, texcoord).g, viewDir, normal);
-	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness);
+	float spec = pow(max(dot(normal, halfwayDir), 0.5), roughness)*shadow.r;
 	float geometric = min(
 		(2*dot(halfwayDir, normal)*dot(normal, viewDir))
 		/
@@ -216,10 +215,10 @@ void main() {
 
 	#ifdef SSS
 
-	float sssFactor = 0.25;
+	float sssFactor = 1;
 
 	if ((texture(colortex5, texcoord).b >= 65/255)&&(texture(colortex5, texcoord).b <= 1)){
-		sssFactor = 0.4+(texture(colortex5, texcoord).b);
+		sssFactor += (texture(colortex5, texcoord).b)/8;
 	}
 
 	if (texture(colortex15, texcoord).rgb != vec3(0)){

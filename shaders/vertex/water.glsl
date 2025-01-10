@@ -58,8 +58,7 @@ void main() {
 	int iterations = 8;
 	int increment = 1;
 	for (int i = 0; i < iterations; i += increment){
-		float addition = (sin(worldTime*0.001))*(WAVE_SPEED/20)*100000*(WAVE_SPEED)/(WAVYNESS*100);
-		float height = pNoise((worldPos.xz+vec2(addition, addition*1.5)+(rand(vec2(i))))/100, 1, 0.01);
+		float height = pNoise(((worldPos.xz)*(sin((frameCounter-(frameTime)+36000)*0.00006))), 1, 1);
 		gl_Position.y += height/(12/WAVYNESS/biomeMult);
 	}
 	gl_Position.y -= (0.075*biomeMult);
