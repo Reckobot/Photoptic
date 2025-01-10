@@ -1,10 +1,11 @@
 #version 330 compatibility
 #extension GL_ARB_shader_storage_buffer_object : enable
 #include "/lib/SSBO.glsl"
+#include "/lib/clouds.glsl"
 
 in vec2 texcoord;
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 0,13 */
 layout(location = 0) out vec4 color;
 
 float fogify(float x, float w) {
@@ -88,12 +89,20 @@ void main() {
 	vec4 shadowClipPos = shadowProjection * vec4(shadowViewPos, 1.0);
 	vec3 shadow = getSoftShadow(shadowClipPos, clamp(exp(length(viewPos)/16)*SHADOW_RES*0.00000005, 0.001, 1.0));
 
-	float NoL = dot(normal, worldLightVector);
-	if (texture(colortex15, texcoord).rgb != vec3(0)){
-		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
-			NoL = clamp(NoL, 0.5, 1.0);
+	vec3 cloudpos = worldPos;
+	
+	for (int i = 0; i < 8; i++){
+		vec3 p = (worldPos + (worldLightVector*i*8));
+		if (p.y > 125){
+			cloudpos = p;
 		}
 	}
+
+	float cloudshadow = clamp(getCloud(cloudpos), -1.0, 1.0);
+	shadow *= shadow - clamp(cloudshadow*6, 0.0, 1.0);
+	shadow = clamp(shadow, 0.0, 1.0);
+
+	float NoL = dot(normal, worldLightVector);
 
 	vec3 lightDir = worldLightVector;
 	vec3 viewDir = mat3(gbufferModelViewInverse) * -normalize(projectAndDivide(gbufferProjectionInverse, vec3(texcoord.xy, 0) * 2.0 - 1.0));
@@ -207,15 +216,15 @@ void main() {
 
 	#ifdef SSS
 
-	float sssFactor = 2.0;
+	float sssFactor = 0.25;
 
 	if ((texture(colortex5, texcoord).b >= 65/255)&&(texture(colortex5, texcoord).b <= 1)){
-		sssFactor = 0.25+(texture(colortex5, texcoord).b);
+		sssFactor = 0.4+(texture(colortex5, texcoord).b);
 	}
 
 	if (texture(colortex15, texcoord).rgb != vec3(0)){
 		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
-			color.rgb = mix(BSC(color.rgb, sssFactor, 1.0, 1.0), color.rgb, shadow*NoV);
+			color.rgb = mix(BSC(color.rgb, sssFactor, 1.0, 1.0), color.rgb, NoL);
 		}
 	}
 	#endif

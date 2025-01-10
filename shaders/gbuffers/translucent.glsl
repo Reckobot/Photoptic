@@ -39,38 +39,27 @@ void main() {
 		color *= vec4(BSC(glcolor.rgb, 0.5, WATER_SATURATION, 1.0),1.0);
 		color.a = clamp(color.a*1.1, 0.0, 1.0);
 		color *= texture(lightmap, lmcoord);
+
+		vec3 normalnoise = vec3(
+		pNoise(((worldPos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 0.5),
+		pNoise(((worldPos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 0.5),
+		0)/8;
+
+		normalnoise -= normalnoise/2;
+		encodedNormal = vec4(mat3(gbufferModelViewInverse) * (normal+normalnoise) * 0.5 + 0.5, 1.0);
+		encodedNormal.rgb += normalnoise;
 	}else{
 		color = texture(gtexture, texcoord) * glcolor / 2;
 		color *= texture(lightmap, lmcoord);
+		#ifdef LABPBR
+		encodedNormal = vec4(getnormalmap(texcoord) * 1 + 0.5, 1.0);
+		#else
+		encodedNormal = vec4(mat3(gbufferModelViewInverse) * normal * 0.5 + 0.5, 1.0);
+		#endif
 	}
 	if (color.a < 0.1) {
 		discard;
 	}
 	lightmapData = vec4(lmcoord, 0.0, 1.0);
-	#ifdef LABPBR
-	#ifdef WATER_TEXTURE
-	encodedNormal = vec4(getnormalmap(texcoord) * 1 + 0.5, 1.0);
-	#else
-	encodedNormal = vec4(mat3(gbufferModelViewInverse) * normal * 0.5 + 0.5, 1.0);
-	#endif
-	#else
-	encodedNormal = vec4(mat3(gbufferModelViewInverse) * normal * 0.5 + 0.5, 1.0);
-	#endif
 	encodedSpecular = vec4(1.0);
-
-	#ifdef WATER_FOAM
-	if (bool(isWater)){
-		for (int i = 0; i < 8; i ++){
-			float nois = pNoise((worldPos.xz*i+(sin(worldTime*0.0001)*200))/1000, 1000, 0.05);
-
-			float foam = clamp(
-				nois*2 + (nois * (sin(worldTime*0.01)/8)), 
-				0.22, 
-				0.28)*4.5
-			;
-
-			color.rgb *= foam;
-		}
-	}
-	#endif
 }

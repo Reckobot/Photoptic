@@ -53,7 +53,7 @@ void main() {
 		biomeMult -= frameTime/(100*TRANSITION_TIME);
 	}
 
-	biomeMult = clamp(biomeMult, 1.0, 10.0);
+	biomeMult = clamp(biomeMult, 1.0, 4.0);
 
 	int iterations = 8;
 	int increment = 1;
