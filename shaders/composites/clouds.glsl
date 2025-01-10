@@ -88,19 +88,11 @@ void main() {
 
 	int count = 0;
 
-	vec3 startpos = viewDir;
-
-	for (int i = 0; i < 32; i++){
-		vec3 rayPos = (viewDir - (normalize(viewDir)*i));
-
-		if ((rayPos.y+cameraPosition.y) >= 125){
-			startpos = rayPos;
-			break;
-		}
-	}
+	vec3 startpos = viewDir - (normalize(viewDir)*32);
 
 	for (int i = 0; i < CLOUD_STEPS; i++){
-		vec3 rayPos = (startpos - (normalize(viewDir)*i));
+		vec3 rayPos = ((startpos) - (normalize(viewDir)*i));
+		rayPos = ((startpos*pow((rayPos.y+cameraPosition.y), 0.01)) - (normalize(viewDir)*i));
 
 		if (count == 0){
 			firstpos = rayPos;
@@ -137,7 +129,7 @@ void main() {
 
 	cloudbuffer.rgb = mix(texture(colortex3, texcoord).rgb, cloudbuffer.rgb, cloudbuffer.a);
 	cloudbuffer.rgb = clamp(cloudbuffer.rgb, 0.05, 10.0);
-	cloudbuffer.rgb = mix(cloudbuffer.rgb, skyColor, 0.25);
+	cloudbuffer.rgb = mix(cloudbuffer.rgb, skyColor * fogColor, 0.25);
 
 	#endif
 }
