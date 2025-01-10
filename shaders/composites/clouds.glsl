@@ -107,9 +107,9 @@ void main() {
 		}
 
 		if (length(rayPos) <= length(ftplPos)){
-			float c = pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/50)))/250, 1, 1);
-			c -= pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/50)))/75, 1, 1);
-			c -= pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/50)))/25, 1, 1);
+			float c = pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/100)))/250, 1, 1);
+			c -= pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/100)))/75, 1, 1);
+			c -= pNoise(((rayPos.xz+cameraPosition.xz)*(sin(worldTime*0.01/100)))/25, 1, 1);
 			if (((rayPos.y+cameraPosition.y) > 125)&&((rayPos.y+cameraPosition.y) < 125+(c*64))){
 
 				cloud += c;
@@ -133,7 +133,7 @@ void main() {
 	cloudbuffer = vec4(mix(vec3(1.0)/1.45, vec3(1.75, 1.5, 1.0)*1.1, cloudcolor), clamp(cloud, 0.0, 1.0));
 
 	cloudbuffer.rgb *= timeDay*1.25;
-	cloudbuffer.rgb = BSC(cloudbuffer.rgb, 0.9, 2.0, 4.0);
+	cloudbuffer.rgb = BSC(cloudbuffer.rgb, 0.9, 1.5, 4.0);
 
 	cloudbuffer.rgb = mix(texture(colortex3, texcoord).rgb, cloudbuffer.rgb, cloudbuffer.a);
 	cloudbuffer.rgb = clamp(cloudbuffer.rgb, 0.05, 10.0);
