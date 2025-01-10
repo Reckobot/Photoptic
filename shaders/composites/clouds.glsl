@@ -88,11 +88,11 @@ void main() {
 
 	int count = 0;
 
-	vec3 startpos = viewDir - (normalize(viewDir)*32);
-
 	for (int i = 0; i < CLOUD_STEPS; i++){
-		vec3 rayPos = ((startpos) - (normalize(viewDir)*i));
-		rayPos = ((startpos*pow((rayPos.y+cameraPosition.y), 0.01)) - (normalize(viewDir)*i));
+		vec3 rayPos = ((viewDir) - (normalize(viewDir)*i));
+		rayPos = ((viewDir) - (normalize(viewDir)*i))+(rand(vec2((rayPos.x + rayPos.y + rayPos.z)/128)
+		-(vec2((rayPos.x + rayPos.y + rayPos.z))/2)*100)
+		);
 
 		if (count == 0){
 			firstpos = rayPos;
@@ -122,10 +122,10 @@ void main() {
 
 	cloudcolor /= count;
 
-	cloudbuffer = vec4(mix(vec3(1.0)/1.45, vec3(1.75, 1.5, 1.0)*1.1, cloudcolor), clamp(cloud, 0.0, 1.0));
+	cloudbuffer = vec4(mix(vec3(1.25, 1.125, 1.0)/1.5, vec3(1.75, 1.5, 1.0)*1.1, cloudcolor), clamp(cloud, 0.0, 1.0));
 
-	cloudbuffer.rgb *= timeDay*1.25;
-	cloudbuffer.rgb = BSC(cloudbuffer.rgb, 0.9, 1.5, 4.0);
+	cloudbuffer.rgb *= timeDay*1.15;
+	cloudbuffer.rgb = BSC(cloudbuffer.rgb, 0.9, 1.1, 4.0);
 
 	cloudbuffer.rgb = mix(texture(colortex3, texcoord).rgb, cloudbuffer.rgb, cloudbuffer.a);
 	cloudbuffer.rgb = clamp(cloudbuffer.rgb, 0.05, 10.0);

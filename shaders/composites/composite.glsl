@@ -19,7 +19,7 @@ vec3 calcSkyColor(vec3 pos) {
 vec3 getShadow(vec3 shadowScreenPos){
 	vec4 shadowColor = texture(shadowcolor0, shadowScreenPos.xy);
 	if (texture(shadowcolor1, shadowScreenPos.xy).rgb == vec3(1)){
-	return shadowColor.rgb;
+	return shadowColor.rgb*0.5;
 	}
 	float transparentShadow = step(shadowScreenPos.z, texture(shadowtex0, shadowScreenPos.xy).r); // sample the shadow map containing everything
 	if(transparentShadow == 1.0){
