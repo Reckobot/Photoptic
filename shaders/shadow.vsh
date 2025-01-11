@@ -44,10 +44,6 @@ void main() {
 
 			gl_Position.xyz = distortShadowClipPos((gl_ModelViewProjectionMatrix * vertex).xyz);
 		}
-	}else if(mc_Entity.x == 301){
-		vertex.xz += sin(e*(worldPos.xz/100))/18;
-
-		gl_Position.xyz = distortShadowClipPos((gl_ModelViewProjectionMatrix * vertex).xyz);
 	}
 	#endif
 }

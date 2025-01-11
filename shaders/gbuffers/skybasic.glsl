@@ -29,6 +29,6 @@ void main() {
 		color += vec4(calcSkyColor(normalize(pos)), 1.0);
 	}
 	color = vec4(pow(color.rgb, vec3(2.5)), 1);
-	color.rgb = BSC(color.rgb, 1.0, 1.25, 1.0);
+	color.rgb = BSC(color.rgb, 1.0, 1.25-rainStrength, 1.0);
 	skybuffer = color;
 }

@@ -136,7 +136,7 @@ void main() {
 
 	cloudbuffer.a = clamp(cloud, 0.0, 1.0);
 	cloudbuffer.b /= clamp(timeDay*100, 0.7, 1.0);
-	cloudbuffer.rgb = BSC(cloudbuffer.rgb, clamp(timeDay*0.5, 0.025, 1.0), 2.25, 1.0);
+	cloudbuffer.rgb = BSC(cloudbuffer.rgb, clamp(timeDay*0.5, 0.025, 1.0), 2.25-rainStrength, 1.0);
 
 	cloudbuffer.rgb = mix(cloudbuffer.rgb, skyColor * fogColor, 0.25);
 	cloudbuffer.rgb = clamp(cloudbuffer.rgb, 0.05, 10.0);

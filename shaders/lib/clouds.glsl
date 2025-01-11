@@ -18,5 +18,7 @@ float getCloud(vec3 pos){
 
     c *= 1.5;
 
+    c += rainStrength/1.25;
+
     return c;
 }

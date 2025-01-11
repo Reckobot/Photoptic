@@ -51,3 +51,4 @@ uniform int renderStage;
 
 uniform int worldTime;
 uniform int biome_category;
+uniform float rainStrength;

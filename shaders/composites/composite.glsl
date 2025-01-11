@@ -241,4 +241,8 @@ void main() {
 		}
 	}
 	#endif
+
+	if ((texture(colortex5, texcoord).a <= 254/255)){
+		color.rgb += 100;
+	}
 }
