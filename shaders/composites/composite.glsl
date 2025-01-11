@@ -220,7 +220,7 @@ void main() {
 	}
 
 	if (depth != texture(depthtex1, texcoord).r){
-		fresnel = getFresnel(0.0, viewDir, normal);
+		fresnel = getFresnel(0.25, viewDir, normal);
 		reflection = BSC(reflection, 8, 1.0, 1.0);
 	}
 
