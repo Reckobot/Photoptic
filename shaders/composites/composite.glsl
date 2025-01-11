@@ -221,7 +221,7 @@ void main() {
 
 	if (depth != texture(depthtex1, texcoord).r){
 		fresnel = getFresnel(0.0, viewDir, normal);
-		reflection = BSC(reflection, 10, 1.0, 1.0);
+		reflection = BSC(reflection, 8, 1.0, 1.0);
 	}
 
 	color.rgb = mix(color.rgb, reflection, fresnel);
