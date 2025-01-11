@@ -22,6 +22,9 @@
 #define FANCY_CLOUDS
 #define CLOUD_STEPS 256 //[32 64 80 128 256 512 1024 2048 4096 8192]
 #define CLOUD_RES 4 //[1 2 3 4]
+#define CLOUD_SHADOWS
+
+#define WAVING_FOLIAGE
 
 #define SSS
 #define BLOOM

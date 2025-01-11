@@ -4,9 +4,19 @@
 #include "/lib/distort.glsl"
 
 float getCloud(vec3 pos){
-    float c = pNoise(((pos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 50);
-    c -= pNoise(((pos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 25);
-    c -= pNoise(((pos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 5);
+    int framecount;
+    if (frameCounter > 18000){
+        framecount = 36000 - frameCounter;
+    }else{
+        framecount = frameCounter;
+    }
+    float e = (framecount-(frameTime))*0.05;
+    vec2 v = ((pos.xz)+vec2(e));
+    float c = pNoise(v, 1, 500);
+    c -= pNoise(v, 1, 250);
+    c -= pNoise(v, 1, 50);
+
+    c *= 1.5;
 
     return c;
 }

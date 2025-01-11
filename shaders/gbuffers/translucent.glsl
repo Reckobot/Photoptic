@@ -33,6 +33,7 @@ vec3 getnormalmap(vec2 texcoord){
 }
 
 void main() {
+	#ifdef FANCY_WATER
 	if (bool(isWater)){
 		color = vec4(vec3(0.1), 0.75);
 		albedo = color;
@@ -57,6 +58,16 @@ void main() {
 		encodedNormal = vec4(mat3(gbufferModelViewInverse) * normal * 0.5 + 0.5, 1.0);
 		#endif
 	}
+	#else
+		color = texture(gtexture, texcoord) * glcolor;
+		color.rgb *= 0.1;
+		color *= texture(lightmap, lmcoord);
+		#ifdef LABPBR
+		encodedNormal = vec4(getnormalmap(texcoord) * 1 + 0.5, 1.0);
+		#else
+		encodedNormal = vec4(mat3(gbufferModelViewInverse) * normal * 0.5 + 0.5, 1.0);
+		#endif
+	#endif
 	if (color.a < 0.1) {
 		discard;
 	}

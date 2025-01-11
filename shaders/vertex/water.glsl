@@ -57,9 +57,17 @@ void main() {
 
 	int iterations = 8;
 	int increment = 1;
+
+    int framecount;
+    if (frameCounter > 18000){
+        framecount = 36000 - frameCounter;
+    }else{
+        framecount = frameCounter;
+    }
+
 	for (int i = 0; i < iterations; i += increment){
-		float height = pNoise(((worldPos.xz)*(sin((frameCounter-(frameTime)+36000)*0.00006))), 1, 1);
-		gl_Position.y += height/(12/WAVYNESS/biomeMult);
+		float height = pNoise(worldPos.xz + (framecount-(frameTime))*0.05, 1, 10);
+		gl_Position.y += height/(48/WAVYNESS/biomeMult);
 	}
 	gl_Position.y -= (0.075*biomeMult);
 	#endif

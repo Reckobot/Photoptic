@@ -89,6 +89,8 @@ void main() {
 	vec4 shadowClipPos = shadowProjection * vec4(shadowViewPos, 1.0);
 	vec3 shadow = getSoftShadow(shadowClipPos, clamp(exp(length(viewPos)/16)*SHADOW_RES*0.00000005, 0.001, 1.0));
 
+	#ifdef CLOUD_SHADOWS
+	#ifdef FANCY_CLOUDS
 	float cloudshadow = 0;
 	
 	for (int i = 0; i < 16; i++){
@@ -99,6 +101,8 @@ void main() {
 	}
 
 	shadow *= shadow - clamp(cloudshadow*4, 0.0, 1.0);
+	#endif
+	#endif
 	shadow = clamp(shadow, 0.0, 1.0);
 
 	float NoL = dot(normal, worldLightVector);
@@ -193,13 +197,8 @@ void main() {
 
 	reflection *= lightmap.g * clamp(shadow, 0.9, 1.0) * clamp(NoL, 0.9, 1.0);
 
-	if (texture(colortex8, texcoord) == vec4(0)){
-		color.rgb = brdf;
-		reflection = color.rgb * reflection;
-	}else{
-		color.rgb *= vec3(clamp(getBrightness(skyColor*2), 0.25, 1.0));
-		reflection = color.rgb;
-	}
+	color.rgb = brdf;
+	reflection = color.rgb * reflection;
 
 	if (reflection == vec3(0)){
 		reflection = color.rgb;
@@ -211,7 +210,7 @@ void main() {
 	}
 
 	color.rgb = mix(color.rgb, reflection, fresnel);
-	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/4/(timeDay*24));
+	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/4*(1-shadow));
 
 	#ifdef SSS
 
@@ -223,7 +222,7 @@ void main() {
 
 	if (texture(colortex15, texcoord).rgb != vec3(0)){
 		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
-			color.rgb = mix(BSC(color.rgb, sssFactor, 1.0, 1.0), color.rgb, NoL);
+			color.rgb = mix(BSC(color.rgb, sssFactor, 1.1, 1.0), color.rgb, NoL*2);
 		}
 	}
 	#endif

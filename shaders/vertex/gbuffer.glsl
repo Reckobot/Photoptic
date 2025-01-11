@@ -32,4 +32,28 @@ void main() {
 	}
 
 	pos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+
+	#ifdef WAVING_FOLIAGE
+	if (bool(isFoliage)){
+		if (gl_Vertex.y > -1){
+			vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+			vec3 ftplPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+			vec3 worldPos = ftplPos + cameraPosition;
+
+			int framecount;
+			if (frameCounter > 18000){
+				framecount = 36000 - frameCounter;
+			}else{
+				framecount = frameCounter;
+			}
+			float e = (framecount-(frameTime))*0.05;
+
+			vec4 vertex = gl_Vertex;
+			vertex.xz += sin(e)/18;
+
+			gl_Position = (gl_ModelViewProjectionMatrix * vertex);
+			pos = (gl_ModelViewMatrix * vertex).xyz;
+		}
+	}
+	#endif
 }
