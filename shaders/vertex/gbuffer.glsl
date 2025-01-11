@@ -1,5 +1,8 @@
 #version 330 compatibility
+#include "/lib/tonemap.glsl"
 #include "/lib/settings.glsl"
+#include "/lib/functions/common.glsl"
+#include "/lib/distort.glsl"
 
 out vec2 lmcoord;
 out vec2 texcoord;
@@ -51,13 +54,13 @@ void main() {
 	vec4 vertex = gl_Vertex;
 	if (mc_Entity.x == 300){
 		if ((pos.y - centerPosition.y) > 0.25){
-			vertex.xz += sin(e)/18;
+			vertex.xz += sin(e*(worldPos.xz/100))/18;
 
 			gl_Position = (gl_ModelViewProjectionMatrix * vertex);
 			pos = (gl_ModelViewMatrix * vertex).xyz;
 		}
 	}else if(mc_Entity.x == 301){
-		vertex.xz += sin(e)/18;
+		vertex.xz += sin(e*(worldPos.xz/100))/18;
 
 		gl_Position = (gl_ModelViewProjectionMatrix * vertex);
 		pos = (gl_ModelViewMatrix * vertex).xyz;

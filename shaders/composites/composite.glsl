@@ -192,7 +192,7 @@ void main() {
 
 	#endif
 
-	sunlight *= shadow * clamp(NoL, 0.0, 1.0);
+	sunlight *= (shadow * clamp(NoL, 0.0, 1.0));
 	sunlight *= SUN_INTENSITY;
 
 	float timeDay = clamp(getBrightness(skyColor), 0.05, 1.0);
@@ -225,7 +225,7 @@ void main() {
 	}
 
 	color.rgb = mix(color.rgb, reflection, fresnel);
-	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/4*(1-shadow));
+	color.rgb += texture(colortex0, texcoord).rgb * (lightmap.r/16);
 
 	#ifdef SSS
 
@@ -237,7 +237,7 @@ void main() {
 
 	if (texture(colortex15, texcoord).rgb != vec3(0)){
 		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
-			color.rgb = mix(BSC(color.rgb, sssFactor, 1.1, 1.0), color.rgb, 1-shadow);
+			color.rgb = mix(BSC(color.rgb, sssFactor, 1.2, 1.0), color.rgb, 1-shadow);
 		}
 	}
 	#endif

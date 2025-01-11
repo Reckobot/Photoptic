@@ -10,7 +10,7 @@ float getCloud(vec3 pos){
     }else{
         framecount = frameCounter;
     }
-    float e = (framecount-(frameTime))*0.05;
+    float e = (framecount*CLOUD_SPEED*0.5-(frameTime))*0.05;
     vec2 v = ((pos.xz)+vec2(e));
     float c = pNoise(v, 1, 500);
     c -= pNoise(v, 1, 250);

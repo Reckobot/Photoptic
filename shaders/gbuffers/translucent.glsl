@@ -42,8 +42,8 @@ void main() {
 		color *= texture(lightmap, lmcoord);
 
 		vec3 normalnoise = vec3(
-		pNoise(((worldPos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 0.5),
-		pNoise(((worldPos.xz)*(sin((frameCounter*3-(frameTime)+36000)*0.000005))), 1, 0.5),
+		pNoise(((worldPos.xz)*(sin((frameCounter*3*WAVE_SPEED-(frameTime)+36000)*0.000005))), 1, 0.5),
+		pNoise(((worldPos.xz)*(sin((frameCounter*3*WAVE_SPEED-(frameTime)+36000)*0.000005))), 1, 0.5),
 		0)/8;
 
 		normalnoise -= normalnoise/2;
@@ -72,5 +72,9 @@ void main() {
 		discard;
 	}
 	lightmapData = vec4(lmcoord, 0.0, 1.0);
-	encodedSpecular = vec4(1.0);
+	if (bool(isWater)){
+		encodedSpecular = vec4(1.0);
+	}else{
+		encodedSpecular = texture(specular, texcoord);
+	}
 }
