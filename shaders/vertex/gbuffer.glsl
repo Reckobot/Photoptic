@@ -1,4 +1,5 @@
 #version 330 compatibility
+#include "/lib/settings.glsl"
 
 out vec2 lmcoord;
 out vec2 texcoord;
