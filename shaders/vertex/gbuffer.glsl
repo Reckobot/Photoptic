@@ -6,6 +6,7 @@ out vec2 texcoord;
 out vec4 glcolor;
 out vec3 normal;
 in vec4 at_tangent;
+in vec4 at_midBlock;
 out mat3 tbnmatrix;
 out vec3 pos;
 
@@ -26,7 +27,7 @@ void main() {
 		mat3(gbufferModelViewInverse) * normal
 	);
 
-	if (mc_Entity.x == 300){
+	if ((mc_Entity.x == 300)||(mc_Entity.x == 301)||(mc_Entity.x == 302)){
 		isFoliage = 1;
 	}else{
 		isFoliage = 0;
@@ -35,26 +36,31 @@ void main() {
 	pos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 
 	#ifdef WAVING_FOLIAGE
-	if (bool(isFoliage)){
-		if (gl_Vertex.y > -1){
-			vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
-			vec3 ftplPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
-			vec3 worldPos = ftplPos + cameraPosition;
+	vec3 centerPosition = pos + at_midBlock.xyz/64.0;
+	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+	vec3 ftplPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
+	vec3 worldPos = ftplPos + cameraPosition;
 
-			int framecount;
-			if (frameCounter > 18000){
-				framecount = 36000 - frameCounter;
-			}else{
-				framecount = frameCounter;
-			}
-			float e = (framecount-(frameTime))*0.05;
-
-			vec4 vertex = gl_Vertex;
+	int framecount;
+	if (frameCounter > 18000){
+		framecount = 36000 - frameCounter;
+	}else{
+		framecount = frameCounter;
+	}
+	float e = (framecount-(frameTime))*0.05;
+	vec4 vertex = gl_Vertex;
+	if (mc_Entity.x == 300){
+		if ((pos.y - centerPosition.y) > 0.25){
 			vertex.xz += sin(e)/18;
 
 			gl_Position = (gl_ModelViewProjectionMatrix * vertex);
 			pos = (gl_ModelViewMatrix * vertex).xyz;
 		}
+	}else if(mc_Entity.x == 301){
+		vertex.xz += sin(e)/18;
+
+		gl_Position = (gl_ModelViewProjectionMatrix * vertex);
+		pos = (gl_ModelViewMatrix * vertex).xyz;
 	}
 	#endif
 }

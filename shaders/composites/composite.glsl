@@ -222,7 +222,7 @@ void main() {
 
 	if (texture(colortex15, texcoord).rgb != vec3(0)){
 		if (length(texture(colortex15, texcoord).rgb) <= length(viewPos)){
-			color.rgb = mix(BSC(color.rgb, sssFactor, 1.1, 1.0), color.rgb, NoL*0.1);
+			color.rgb = mix(BSC(color.rgb, sssFactor, 1.1, 1.0), color.rgb, 1-shadow);
 		}
 	}
 	#endif
