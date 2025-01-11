@@ -46,7 +46,6 @@ void main() {
 	#endif
 
 	encodedSpecular = texture(specular, texcoord);
-	encodedSpecular.a = 1;
 
 	if ((bool(isFoliage))||(renderStage == MC_RENDER_STAGE_ENTITIES)){
 		foliage.rgb = pos;
