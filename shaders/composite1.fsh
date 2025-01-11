@@ -1,3 +1,1 @@
-#include "/lib/clouds.glsl"
-
-#include "/composites/clouds.glsl"
+#include "/composites/composite.glsl"
