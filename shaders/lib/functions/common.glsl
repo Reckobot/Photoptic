@@ -48,6 +48,11 @@ float getBrightness(vec3 color){
 	return (color.r + color.g + color.b)/3;
 }
 
+float getLum(vec3 color){
+	const vec3 lum = vec3(0.2125, 0.7154, 0.0721);
+	return ((color.r*lum.r) + (color.g*lum.g) + (color.b*lum.b));
+}
+
 float getFresnel(float f0, vec3 dir, vec3 norm){
 	float fresnel = pow(f0 + (1 - f0) * (1-dot(dir, norm)), 5);
     return fresnel;

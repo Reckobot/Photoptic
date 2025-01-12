@@ -50,6 +50,10 @@ void main() {
 	encodedSpecular.a = 1;
 	specularRaw = texture(specular, texcoord);
 
+	if (texture(specular, texcoord).a == 0){
+		specularRaw.a = 1;
+	}
+
 	if ((bool(isFoliage))||(renderStage == MC_RENDER_STAGE_ENTITIES)){
 		foliage.rgb = pos;
 	}else{
