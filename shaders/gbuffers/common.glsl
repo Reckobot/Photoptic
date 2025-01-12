@@ -15,13 +15,14 @@ in mat3 tbnmatrix;
 flat in int isFoliage;
 in vec3 pos;
 
-/* RENDERTARGETS: 0,1,2,5,12,15 */
+/* RENDERTARGETS: 0,1,2,5,12,15,13 */
 layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 lightmapData;
 layout(location = 2) out vec4 encodedNormal;
 layout(location = 3) out vec4 encodedSpecular;
 layout(location = 4) out vec4 albedo;
 layout(location = 5) out vec4 foliage;
+layout(location = 6) out vec4 specularRaw;
 
 vec3 getnormalmap(vec2 texcoord){
 	vec3 normalmap = texture(normals, texcoord).rgb;
@@ -46,6 +47,8 @@ void main() {
 	#endif
 
 	encodedSpecular = texture(specular, texcoord);
+	encodedSpecular.a = 1;
+	specularRaw = texture(specular, texcoord);
 
 	if ((bool(isFoliage))||(renderStage == MC_RENDER_STAGE_ENTITIES)){
 		foliage.rgb = pos;

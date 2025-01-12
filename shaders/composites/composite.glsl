@@ -237,7 +237,7 @@ void main() {
 	}
 	#endif
 
-	float emissive = texture(colortex5, texcoord).a;
+	float emissive = texture(colortex13, texcoord).a;
 
 	if ((emissive <= 254.5/255)&&(emissive != 0)){
 		color.rgb *= original.rgb * (1+emissive*50*EMISSIVE_STRENGTH);
