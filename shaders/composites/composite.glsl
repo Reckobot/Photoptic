@@ -178,17 +178,11 @@ void main() {
 				raycoord = clamp(rayscreenPos.xy, vec2(0), vec2(1));
 				vec2 c = raycoord/4;
 				if (((raycoord.y > 0)&&(raycoord.y < 1))&&((raycoord.x > 0)&&(raycoord.x < 1))){
-					reflection.rgb = mix(reflection.rgb, texture(colortex12, c).rgb, texture(colortex12, c).a);
+					reflection.rgb = mix(reflection.rgb, texture(colortex12, c).rgb*2, texture(colortex12, c).a);
 				}
 			}
-
-			if (rayPos.y > 125){
-				vec4 sampl = texture(colortex12, raycoord);
-
-				reflection.rgb = mix(reflection.rgb, sampl.rgb, sampl.a);
-			}
 		}
-		reflection = BSC(reflection, 1.0, 1.0, 1.0);
+		reflection = BSC(reflection, 0.8, 1.25, 1.0);
 	}
 
 	#endif
