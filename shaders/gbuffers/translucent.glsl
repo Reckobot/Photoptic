@@ -42,8 +42,8 @@ void main() {
 		color *= texture(lightmap, lmcoord);
 
 		vec3 normalnoise = vec3(
-		pNoise((vec2(deltaTime/5000)+worldPos.xz), 1, 0.5),
-		pNoise((vec2(deltaTime/5000)+worldPos.xz), 1, 0.5),
+		pNoise((vec2(deltaTime/5000*WAVE_SPEED)+worldPos.xz), 1, 0.5),
+		pNoise((vec2(deltaTime/5000*WAVE_SPEED)+worldPos.xz), 1, 0.5),
 		0)/8;
 
 		normalnoise -= normalnoise/2;
