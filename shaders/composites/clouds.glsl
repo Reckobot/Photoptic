@@ -1,6 +1,5 @@
 #version 330 compatibility
 #extension GL_ARB_shader_storage_buffer_object : enable
-#include "/lib/SSBO.glsl"
 
 in vec2 texcoord;
 

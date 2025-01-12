@@ -1,6 +1,5 @@
 #version 330 compatibility
 #extension GL_ARB_shader_storage_buffer_object : enable
-#include "/lib/SSBO.glsl"
 #include "/lib/clouds.glsl"
 
 in vec2 texcoord;
@@ -62,6 +61,8 @@ vec3 getSoftShadow(vec4 shadowClipPos, float bias){
 }
 
 void main() {
+	deltaTime += frameTime;
+
 	color = texture(colortex0, texcoord);
 	vec4 original = color;
 

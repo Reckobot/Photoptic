@@ -37,33 +37,4 @@ void main() {
 	}
 
 	pos = (gl_ModelViewMatrix * gl_Vertex).xyz;
-
-	#ifdef WAVING_FOLIAGE
-	vec3 centerPosition = pos + at_midBlock.xyz/64.0;
-	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
-	vec3 ftplPos = (gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz;
-	vec3 worldPos = ftplPos + cameraPosition;
-
-	int framecount;
-	if (frameCounter > 18000){
-		framecount = 36000 - frameCounter;
-	}else{
-		framecount = frameCounter;
-	}
-	float e = (framecount-(frameTime))*0.05;
-	vec4 vertex = gl_Vertex;
-	if (mc_Entity.x == 300){
-		if ((pos.y - centerPosition.y) > 0.25){
-			vertex.xz += sin(e*(worldPos.xz/100))/18;
-
-			gl_Position = (gl_ModelViewProjectionMatrix * vertex);
-			pos = (gl_ModelViewMatrix * vertex).xyz;
-		}
-	}else if(mc_Entity.x == 301){
-		vertex.xz += sin(e*(worldPos.xz/100))/18;
-
-		gl_Position = (gl_ModelViewProjectionMatrix * vertex);
-		pos = (gl_ModelViewMatrix * vertex).xyz;
-	}
-	#endif
 }

@@ -66,7 +66,7 @@ void main() {
     }
 
 	for (int i = 0; i < iterations; i += increment){
-		float height = pNoise(worldPos.xz + (framecount*WAVE_SPEED-(frameTime))*0.05, 1, 10);
+		float height = pNoise(worldPos.xz + (deltaTime*WAVE_SPEED)*0.001, 1, 10);
 		gl_Position.y += height/(48/WAVYNESS/biomeMult);
 	}
 	gl_Position.y -= (0.075*biomeMult);
